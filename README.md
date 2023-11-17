@@ -1,1 +1,1 @@
-# jogo_da_velha_em_c
+Esse é um jogo da velha feito em na linguagem C.
