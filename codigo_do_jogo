@@ -1,44 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Função para jogar o jogo da velha
+int coordenadaExiste(int linha, int coluna) {
+    return (linha >= 0 && linha < 3 && coluna >= 0 && coluna < 3);
+}
+
 void jogarJogo(int *vitoriasJogador1, int *vitoriasJogador2) {
-    // Declaração das variáveis locais
-    int l, c, linha, coluna, jogador = 1, ganhou = 0, jogadas = 0, i;
+    int l, c, linha, coluna, jogador = 1, ganhou = 0, jogadas = 0;
     char jogo[3][3], nome1[100], nome2[100];
 
-    printf("Informe a quantidade de jogadores: (1/2) ");
-    scanf("%d", &i);
-    fflush(stdin);
+    printf("Digite o nome do jogador 1: ");
+    scanf("%s", nome1);
+    printf("Digite o nome do jogador 2: ");
+    scanf("%s", nome2);
 
-    switch (i) {
-        case 1:
-            printf("Digite seu nome: ");
-            scanf("%s", nome1);
-            fflush(stdin);
-            break;
-        case 2:
-            printf("Digite o nome do primeiro jogador: ");
-            scanf("%s", nome1);
-            fflush(stdin);
-            printf("Digite o nome do segundo jogador: ");
-            scanf("%s", nome2);
-            fflush(stdin);
-            break;
-        default:
-            printf("Número inválido");
-    };
-
-    // Inicialização do tabuleiro
     for (l = 0; l < 3; l++) {
         for (c = 0; c < 3; c++) {
             jogo[l][c] = ' ';
         }
     }
 
-    // Loop do jogo
     do {
-        // Impressão do tabuleiro
         printf("\n\n\t 0   1   2\n\n");
         for (l = 0; l < 3; l++) {
             for (c = 0; c < 3; c++) {
@@ -55,16 +37,18 @@ void jogarJogo(int *vitoriasJogador1, int *vitoriasJogador2) {
             printf("\n");
         }
 
-        // Leitura das coordenadas do jogador
         do {
-            printf("\n%s = 0\n%s = X\n", nome1 , nome2);
-          printf("\n%s: Digite a linha e a coluna que deseja jogar: ", (jogador == 1) ? nome1 : nome2);
+            printf("\n%s = O\n%s = X\n", nome1, nome2);
+            printf("\n%s: Digite a linha e a coluna que deseja jogar: ", (jogador == 1) ? nome1 : nome2);
             scanf("%d%d", &linha, &coluna);
-        } while (linha < 0 || linha > 2 || coluna < 0 || coluna > 2 || jogo[linha][coluna] != ' ');
 
-        // Marcação da jogada no tabuleiro
+            if (!coordenadaExiste(linha, coluna)) {
+                printf("\nPosição inválida! Escolha uma posição valida.\n");
+            }
+        } while (!coordenadaExiste(linha, coluna) || jogo[linha][coluna] != ' ');
+
         if (jogador == 1) {
-            jogo[linha][coluna] = '0';
+            jogo[linha][coluna] = 'O';
             jogador++;
         } else {
             jogo[linha][coluna] = 'X';
@@ -72,7 +56,6 @@ void jogarJogo(int *vitoriasJogador1, int *vitoriasJogador2) {
         }
         jogadas++;
 
-        // Verificação do vencedor
         if ((jogo[0][0] == jogo[0][1] && jogo[0][1] == jogo[0][2] && jogo[0][0] != ' ') ||
             (jogo[1][0] == jogo[1][1] && jogo[1][1] == jogo[1][2] && jogo[1][0] != ' ') ||
             (jogo[2][0] == jogo[2][1] && jogo[2][1] == jogo[2][2] && jogo[2][0] != ' ') ||
@@ -91,7 +74,6 @@ void jogarJogo(int *vitoriasJogador1, int *vitoriasJogador2) {
         }
     } while (ganhou == 0 && jogadas < 9);
 
-    // Impressão final do tabuleiro
     printf("\n\n\t 0   1   2\n\n");
     for (l = 0; l < 3; l++) {
         for (c = 0; c < 3; c++) {
@@ -108,29 +90,23 @@ void jogarJogo(int *vitoriasJogador1, int *vitoriasJogador2) {
         printf("\n");
     }
 
-    // Mensagem de empate, se for o caso
     if (ganhou == 0)
         printf("\nO jogo finalizou sem vencedor!\n");
 }
 
-// Função para ver o ranking de vitórias dos jogadores
 void verRanking(int vitoriasJogador1, int vitoriasJogador2) {
     printf("\n=== RANKING ===\n");
     printf("Jogador 1: %d vitórias\n", vitoriasJogador1);
     printf("Jogador 2: %d vitórias\n", vitoriasJogador2);
 }
 
-// Função para mostrar os créditos
 void mostrarCreditos() {
     printf("\nDesenvolvido por Five Devs...\n");
 }
 
-// Função principal
 int main() {
-    int opcao,vitoriasJogador1 = 0, vitoriasJogador2 = 0, i;
-    char nome1[100], nome2[100];
+    int opcao, vitoriasJogador1 = 0, vitoriasJogador2 = 0;
 
-    // Menu principal do programa
     do {
         printf("\nMenu:\n");
         printf("1. Jogar\n");
@@ -140,7 +116,6 @@ int main() {
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
 
-        // Switch para executar a opção escolhida
         switch (opcao) {
             case 1:
                 jogarJogo(&vitoriasJogador1, &vitoriasJogador2);
@@ -157,6 +132,12 @@ int main() {
             default:
                 printf("Opcao invalida! Escolha novamente.\n");
                 break;
+        }
+
+    } while (opcao != 4);
+
+    return 0;
+}
         }
 
     } while (opcao != 4); // Loop continua até o usuário escolher sair
